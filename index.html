@@ -3,82 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kingkong & Mahjong Slot Simulator</title>
+    <title>Multi Slot Simulator Studio</title>
     <style>
-        body {
-            background-color: #121212;
-            color: #fff;
+        * {
+            box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0d0e12;
+            color: #fff;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            padding: 10px;
+            padding: 15px;
         }
 
         .game-container {
-            background: linear-gradient(145deg, #2a1810, #150a04);
-            border: 4px solid #ffd700;
+            background: linear-gradient(145deg, #1f1a24, #110e15);
+            border: 3px solid #ffd700;
             border-radius: 20px;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-            width: 320px;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
             transition: all 0.3s ease;
         }
 
-        .theme-mahjong {
-            background: linear-gradient(145deg, #0d3b1e, #051a0d);
-            border-color: #00ff88;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
-        }
+        /* Dynamic Themes */
+        .theme-kingkong { border-color: #ff8c00; }
+        .theme-mahjong { border-color: #00ff88; }
+        .theme-zeus { border-color: #00d8ff; }
+        .theme-bonanza { border-color: #ff007f; }
+        .theme-starlight { border-color: #e066ff; }
+        .theme-bandito { border-color: #ffcc00; }
 
         h1 {
             color: #ffd700;
-            margin-bottom: 5px;
+            margin: 5px 0 15px 0;
+            font-size: 1.4rem;
             text-shadow: 2px 2px 4px #000;
         }
 
-        .game-select {
+        /* Grid Selection Menu */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
             margin-bottom: 15px;
         }
 
-        .game-select button {
-            background: #333;
-            color: #fff;
-            border: 1px solid #ffd700;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
+        .menu-card {
+            background: #252836;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 8px 4px;
+            font-size: 0.75rem;
             font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #aaa;
         }
 
-        .game-select button.active {
+        .menu-card.active {
             background: #ffd700;
             color: #000;
+            border-color: #fff;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
         .slot-machine {
             display: flex;
             justify-content: space-around;
             background: #000;
-            border: 3px solid #ff8c00;
-            border-radius: 10px;
+            border: 2px solid #ffd700;
+            border-radius: 12px;
             padding: 15px 5px;
             margin: 15px 0;
-            font-size: 3rem;
-        }
-
-        .theme-mahjong .slot-machine {
-            border-color: #00ff88;
+            font-size: 2.8rem;
         }
 
         .reel {
-            width: 80px;
-            height: 80px;
-            background: #222;
+            width: 85px;
+            height: 85px;
+            background: #1a1a1a;
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -91,6 +103,9 @@
             justify-content: space-between;
             font-size: 1rem;
             font-weight: bold;
+            background: #15161c;
+            padding: 10px 15px;
+            border-radius: 8px;
             margin-bottom: 15px;
         }
 
@@ -102,6 +117,97 @@
 
         .btn-wallet {
             flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-depo { background: #00c853; color: white; }
+        .btn-wd { background: #d50000; color: white; }
+
+        .spin-btn {
+            width: 100%;
+            background: linear-gradient(180deg, #ffd700, #ff8c00);
+            color: #000;
+            border: none;
+            padding: 14px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .spin-btn:disabled {
+            background: #444 !important;
+            color: #888;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .msg {
+            min-height: 25px;
+            color: #00e676;
+            font-weight: bold;
+            margin-top: 12px;
+            font-size: 0.95rem;
+        }
+
+        /* Modal Popup Form */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: #1a1a24;
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 20px;
+            width: 300px;
+            text-align: left;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: #ffd700;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #0d0e12;
+            color: #fff;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal-btns button {
+            flex: 1;
             padding: 8px;
             border: none;
             border-radius: 5px;
@@ -109,138 +215,185 @@
             cursor: pointer;
         }
 
-        .btn-depo { background: #28a745; color: white; }
-        .btn-wd { background: #dc3545; color: white; }
-
-        .spin-btn {
-            width: 100%;
-            background: linear-gradient(180deg, #ff8c00, #ff0000);
-            color: white;
-            border: none;
-            padding: 15px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
+        .history-box {
+            margin-top: 15px;
+            background: #111217;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.75rem;
+            text-align: left;
+            max-height: 100px;
+            overflow-y: auto;
+            border: 1px solid #333;
         }
 
-        .theme-mahjong .spin-btn {
-            background: linear-gradient(180deg, #00ff88, #008844);
-            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
-            color: #000;
-        }
-
-        .spin-btn:disabled {
-            background: #555 !important;
-            cursor: not-allowed;
-        }
-
-        .msg {
-            height: 25px;
-            color: #00ffcc;
-            font-weight: bold;
-            margin-top: 10px;
+        .history-item {
+            border-bottom: 1px solid #222;
+            padding: 4px 0;
+            color: #aaa;
         }
     </style>
 </head>
 <body>
 
-<div class="game-container" id="container">
+<div class="game-container theme-kingkong" id="container">
     <h1 id="title">🦍 KINGKONG 🦍</h1>
     
-    <!-- Pilihan Game -->
-    <div class="game-select">
-        <button id="btnKingkong" class="active" onclick="switchGame('kingkong')">Kingkong</button>
-        <button id="btnMahjong" onclick="switchGame('mahjong')">Mahjong</button>
+    <!-- Lobby Game Grid (6 Game) -->
+    <div class="menu-grid">
+        <div class="menu-card active" id="btn-kingkong" onclick="switchGame('kingkong')">🦍 Kingkong</div>
+        <div class="menu-card" id="btn-mahjong" onclick="switchGame('mahjong')">🀄 Mahjong</div>
+        <div class="menu-card" id="btn-zeus" onclick="switchGame('zeus')">⚡ Zeus</div>
+        <div class="menu-card" id="btn-bonanza" onclick="switchGame('bonanza')">🍭 Bonanza</div>
+        <div class="menu-card" id="btn-starlight" onclick="switchGame('starlight')">⭐ Starlight</div>
+        <div class="menu-card" id="btn-bandito" onclick="switchGame('bandito')">💀 Bandito</div>
     </div>
 
     <!-- Tampilan Slot -->
-    <div class="slot-machine">
+    <div class="slot-machine" id="slotMachine">
         <div class="reel" id="reel1">🦍</div>
         <div class="reel" id="reel2">🍌</div>
         <div class="reel" id="reel3">💎</div>
     </div>
 
-    <!-- Panel Informasi Saldo -->
+    <!-- Panel Saldo & Bet -->
     <div class="info-panel">
-        <span>Saldo: <span id="balance" style="color:#00ff00;">1000</span></span>
+        <span>Saldo: <span id="balance" style="color:#00ff88;">1000</span></span>
         <span>Bet: <span id="bet">50</span></span>
     </div>
 
-    <!-- Tombol Wallet Deposit & Withdraw -->
+    <!-- Fitur Transaksi -->
     <div class="action-btns">
-        <button class="btn-wallet btn-depo" onclick="deposit()">+ Deposit</button>
-        <button class="btn-wallet btn-wd" onclick="withdraw()">- Penarikan</button>
+        <button class="btn-wallet btn-depo" onclick="openModal('deposit')">+ DEPOSIT</button>
+        <button class="btn-wallet btn-wd" onclick="openModal('withdraw')">- WITHDRAW</button>
     </div>
 
     <!-- Tombol Spin -->
-    <button class="spin-btn" id="spinBtn" onclick="spin()">PUTAR / SPIN</button>
+    <button class="spin-btn" id="spinBtn" onclick="spin()">SPIN / PUTAR</button>
 
-    <div class="msg" id="msg"></div>
+    <div class="msg" id="msg">Selamat Datang! Pilih Game Anda.</div>
+
+    <!-- Riwayat Transaksi -->
+    <div class="history-box" id="historyBox">
+        <div style="font-weight:bold; color:#ffd700; margin-bottom:5px;">Riwayat Transaksi (Simulasi):</div>
+        <div id="historyList">Belum ada transaksi.</div>
+    </div>
+</div>
+
+<!-- Modal Form Transaksi -->
+<div class="modal" id="txModal">
+    <div class="modal-content">
+        <h3 id="modalTitle">Form Deposit</h3>
+        
+        <div class="form-group">
+            <label>Metode Pembayaran/Tujuan:</label>
+            <select id="txMethod">
+                <option value="DANA">DANA</option>
+                <option value="OVO">OVO</option>
+                <option value="Gopay">Gopay</option>
+                <option value="Bank BCA">Bank BCA</option>
+                <option value="Bank BRI">Bank BRI</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Nomor HP / Rekening Pemain:</label>
+            <input type="text" id="txAccount" placeholder="Contoh: 082139291979" value="082139291979">
+        </div>
+
+        <div class="form-group">
+            <label>Nominal (Rp/Poin):</label>
+            <input type="number" id="txAmount" placeholder="10000" value="10000">
+        </div>
+
+        <div class="modal-btns">
+            <button style="background:#555; color:#fff;" onclick="closeModal()">Batal</button>
+            <button style="background:#00c853; color:#fff;" onclick="processTransaction()">Proses</button>
+        </div>
+    </div>
 </div>
 
 <script>
-    // Konfigurasi Game
     const gameData = {
-        kingkong: {
-            title: "🦍 KINGKONG 🦍",
-            symbols: ['🦍', '🍌', '💎', '👑', '🗿'],
-            jackpotSymbol: '🦍',
-            class: ''
-        },
-        mahjong: {
-            title: "🀄 MAHJONG WAYS 🀄",
-            symbols: ['🀄', '🐉', '🧧', '🪙', '🀅'],
-            jackpotSymbol: '🀄',
-            class: 'theme-mahjong'
-        }
+        kingkong: { title: "🦍 KINGKONG 🦍", symbols: ['🦍', '🍌', '💎', '👑', '🗿'], jackpotSymbol: '🦍', theme: 'theme-kingkong' },
+        mahjong: { title: "🀄 MAHJONG WAYS 🀄", symbols: ['🀄', '🐉', '🧧', '🪙', '🀅'], jackpotSymbol: '🀄', theme: 'theme-mahjong' },
+        zeus: { title: "⚡ GATES OF OLYMPUS ⚡", symbols: ['⚡', '🏛️', '👑', '💍', '🍷'], jackpotSymbol: '⚡', theme: 'theme-zeus' },
+        bonanza: { title: "🍭 SWEET BONANZA 🍭", symbols: ['🍭', '🍬', '🍇', '🍉', '🍌'], jackpotSymbol: '🍭', theme: 'theme-bonanza' },
+        starlight: { title: "⭐ STARLIGHT PRINCESS ⭐", symbols: ['⭐', '👸', '💎', '🌙', '☀️'], jackpotSymbol: '⭐', theme: 'theme-starlight' },
+        bandito: { title: "💀 WILD BANDITO 💀", symbols: ['💀', '🎸', '🌵', '🌮', '💰'], jackpotSymbol: '💀', theme: 'theme-bandito' }
     };
 
     let currentGame = 'kingkong';
     let balance = 1000;
     const bet = 50;
+    let currentTxType = 'deposit';
 
     function switchGame(gameKey) {
         currentGame = gameKey;
         const config = gameData[gameKey];
 
-        // Update UI Tema & Judul
-        document.getElementById('title').innerText = config.title;
-        document.getElementById('container').className = `game-container ${config.class}`;
-        
-        // Update Status Tombol Navigasi
-        document.getElementById('btnKingkong').classList.toggle('active', gameKey === 'kingkong');
-        document.getElementById('btnMahjong').classList.toggle('active', gameKey === 'mahjong');
+        document.querySelectorAll('.menu-card').forEach(el => el.classList.remove('active'));
+        document.getElementById(`btn-${gameKey}`).classList.add('active');
 
-        // Reset Reel awal
+        const container = document.getElementById('container');
+        container.className = `game-container ${config.theme}`;
+        document.getElementById('title').innerText = config.title;
+
         document.getElementById('reel1').innerText = config.symbols[0];
         document.getElementById('reel2').innerText = config.symbols[1];
         document.getElementById('reel3').innerText = config.symbols[2];
-        
-        document.getElementById('msg').innerText = `Pindah ke mode ${gameKey.toUpperCase()}`;
+
+        document.getElementById('msg').innerText = `Masuk ke game ${gameKey.toUpperCase()}`;
     }
 
-    function deposit() {
-        const amount = prompt("Masukkan jumlah Deposit simulasi:", "500");
-        if (amount && !isNaN(amount) && Number(amount) > 0) {
-            balance += Number(amount);
-            updateBalance();
-            document.getElementById('msg').innerText = `Deposit +${amount} berhasil!`;
-        }
+    function openModal(type) {
+        currentTxType = type;
+        document.getElementById('modalTitle').innerText = type === 'deposit' ? 'Form Deposit Simulasi' : 'Form Penarikan Simulasi';
+        document.getElementById('txModal').style.display = 'flex';
     }
 
-    function withdraw() {
-        const amount = prompt("Masukkan jumlah Penarikan simulasi:", "200");
-        if (amount && !isNaN(amount) && Number(amount) > 0) {
-            if (Number(amount) <= balance) {
-                balance -= Number(amount);
-                updateBalance();
-                document.getElementById('msg').innerText = `Penarikan -${amount} berhasil!`;
-            } else {
-                alert("Saldo tidak mencukupi untuk penarikan!");
-            }
+    function closeModal() {
+        document.getElementById('txModal').style.display = 'none';
+    }
+
+    function processTransaction() {
+        const method = document.getElementById('txMethod').value;
+        const account = document.getElementById('txAccount').value;
+        const amount = Number(document.getElementById('txAmount').value);
+
+        if (!account || isNaN(amount) || amount <= 0) {
+            alert("Harap masukkan nomor akun dan nominal yang valid!");
+            return;
         }
+
+        if (currentTxType === 'withdraw' && amount > balance) {
+            alert("Saldo koin permainan tidak mencukupi!");
+            return;
+        }
+
+        if (currentTxType === 'deposit') {
+            balance += amount;
+            addHistory(`DEPOSIT [+${amount}] via ${method} (${account}) - SUKSES`);
+            document.getElementById('msg').innerText = `Deposit +${amount} Poin Berhasil!`;
+        } else {
+            balance -= amount;
+            addHistory(`WITHDRAW [-${amount}] ke ${method} (${account}) - SUKSES`);
+            document.getElementById('msg').innerText = `Penarikan -${amount} Poin Berhasil!`;
+        }
+
+        updateBalance();
+        closeModal();
+    }
+
+    function addHistory(text) {
+        const list = document.getElementById('historyList');
+        if (list.innerText === 'Belum ada transaksi.') {
+            list.innerHTML = '';
+        }
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerText = text;
+        list.prepend(item);
     }
 
     function spin() {
@@ -254,24 +407,22 @@
 
         const btn = document.getElementById('spinBtn');
         btn.disabled = true;
-        document.getElementById('msg').innerText = "Memutar...";
+        document.getElementById('msg').innerText = "Memutar reel...";
 
         const currentSymbols = gameData[currentGame].symbols;
         let reel1 = document.getElementById('reel1');
         let reel2 = document.getElementById('reel2');
         let reel3 = document.getElementById('reel3');
 
-        // Acak animasi
         let interval = setInterval(() => {
             reel1.innerText = currentSymbols[Math.floor(Math.random() * currentSymbols.length)];
             reel2.innerText = currentSymbols[Math.floor(Math.random() * currentSymbols.length)];
             reel3.innerText = currentSymbols[Math.floor(Math.random() * currentSymbols.length)];
-        }, 100);
+        }, 80);
 
         setTimeout(() => {
             clearInterval(interval);
 
-            // Hasil akhir
             const res1 = currentSymbols[Math.floor(Math.random() * currentSymbols.length)];
             const res2 = currentSymbols[Math.floor(Math.random() * currentSymbols.length)];
             const res3 = currentSymbols[Math.floor(Math.random() * currentSymbols.length)];
@@ -282,21 +433,21 @@
 
             checkWin(res1, res2, res3);
             btn.disabled = false;
-        }, 1500);
+        }, 1200);
     }
 
     function checkWin(r1, r2, r3) {
         const config = gameData[currentGame];
-        
+
         if (r1 === r2 && r2 === r3) {
-            let reward = (r1 === config.jackpotSymbol) ? 1000 : 400;
+            let reward = (r1 === config.jackpotSymbol) ? 1500 : 500;
             balance += reward;
-            document.getElementById('msg').innerText = `JACKPOT ${currentGame.toUpperCase()}! +${reward}`;
+            document.getElementById('msg').innerText = `🔥 SENSATIONAL! +${reward} Poin 🔥`;
         } else if (r1 === r2 || r2 === r3 || r1 === r3) {
             balance += 100;
-            document.getElementById('msg').innerText = "Menang Kecil! +100";
+            document.getElementById('msg').innerText = "Menang Kombinasi! +100 Poin";
         } else {
-            document.getElementById('msg').innerText = "Coba Lagi!";
+            document.getElementById('msg').innerText = "Belum beruntung, coba lagi!";
         }
         updateBalance();
     }
